@@ -1,0 +1,31 @@
+﻿id,nombre,familia,t_opt_min,t_opt_max,t_letal,t_calor,agua_mm,luz_kwh,hongos,suelos,nitrogeno,ingreso,imagen
+maiz,Maíz,gramíneas,18,30,4,37,500,4.5,0.3,limoso franco,exigente,3,maiz.jpg
+trigo,Trigo,gramíneas,10,20,-6,32,350,3.5,0.5,arcilloso limoso franco,exigente,2,trigo.jpg
+cebada,Cebada,gramíneas,8,20,-7,32,300,3.5,0.4,arenoso limoso franco,neutro,2,cebada.jpg
+avena,Avena,gramíneas,8,20,-6,30,320,3.2,0.4,arcilloso franco,neutro,2,avena.jpg
+sorgo,Sorgo,gramíneas,22,32,6,40,350,5,0.2,arenoso arcilloso franco,exigente,2,sorgo.jpg
+frijol,Frijol,leguminosas,18,27,5,35,350,4.2,0.4,arenoso limoso franco,fija,3,frijol.jpg
+garbanzo,Garbanzo,leguminosas,12,24,-3,34,300,4,0.3,arcilloso franco,fija,3,garbanzo.jpg
+haba,Haba,leguminosas,10,20,-4,28,380,3.5,0.5,arcilloso limoso franco,fija,2,haba.jpg
+chicharo,Chícharo,leguminosas,10,18,-4,28,350,3.5,0.5,limoso franco,fija,3,chicharo.jpg
+lenteja,Lenteja,leguminosas,10,22,-5,32,280,4,0.3,arenoso franco,fija,3,lenteja.jpg
+soya,Soya,leguminosas,20,30,5,36,450,4.5,0.3,limoso franco,fija,3,soya.jpg
+cacahuate,Cacahuate,leguminosas,22,30,8,36,450,4.8,0.3,arenoso franco,fija,3,cacahuate.jpg
+veza,Veza (abono verde),leguminosas,10,22,-8,30,250,3,0.3,arenoso arcilloso limoso franco,fija,1,veza.jpg
+jitomate,Jitomate,solanáceas,18,27,5,34,500,4.8,0.8,arenoso limoso franco,exigente,5,jitomate.jpg
+chile,Chile,solanáceas,20,30,8,36,450,4.8,0.6,arenoso franco,exigente,5,chile.jpg
+papa,Papa,solanáceas,12,20,0,30,450,3.8,0.8,arenoso limoso franco,exigente,4,papa.jpg
+calabaza,Calabaza,cucurbitáceas,18,28,4,36,400,4.5,0.6,arcilloso limoso franco,exigente,3,calabaza.jpg
+pepino,Pepino,cucurbitáceas,20,28,6,34,420,4.5,0.7,limoso franco,exigente,3,pepino.jpg
+sandia,Sandía,cucurbitáceas,22,32,8,38,400,5,0.5,arenoso franco,exigente,4,sandia.jpg
+melon,Melón,cucurbitáceas,22,30,8,38,380,5,0.5,arenoso franco,exigente,4,melon.jpg
+brocoli,Brócoli,brasicáceas,12,20,-3,28,350,3.5,0.5,arcilloso limoso franco,exigente,3,brocoli.jpg
+col,Col,brasicáceas,12,20,-5,28,350,3.3,0.5,arcilloso limoso franco,exigente,3,col.jpg
+coliflor,Coliflor,brasicáceas,13,20,-2,27,350,3.5,0.5,arcilloso limoso franco,exigente,3,coliflor.jpg
+cebolla,Cebolla,amarilidáceas,12,24,-4,32,350,4.2,0.6,arenoso limoso franco,neutro,4,cebolla.jpg
+ajo,Ajo,amarilidáceas,10,22,-6,32,300,4,0.4,limoso franco,neutro,4,ajo.jpg
+zanahoria,Zanahoria,umbelíferas,12,22,-2,30,350,3.8,0.5,arenoso limoso franco,neutro,3,zanahoria.jpg
+lechuga,Lechuga,asteráceas,10,20,-1,28,300,3.2,0.6,limoso franco,neutro,3,lechuga.jpg
+girasol,Girasol,asteráceas,18,28,-2,36,400,5,0.3,arcilloso limoso franco,neutro,3,girasol.jpg
+barbecho,Barbecho (descanso),ninguna,-99,99,-99,99,1,1,0,franco,neutro,0,barbecho.jpg
+amaranto,Amaranto,amarantáceas,20,30,4,38,300,4.8,0.2,arenoso franco,neutro,2,amaranto.jpg
