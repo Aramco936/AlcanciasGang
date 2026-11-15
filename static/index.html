@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Planeador de rotaciones · Adaptando las granjas con datos de la NASA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="lock">
+    <div id="intro">
+        <canvas id="big"></canvas>
+    </div>
+
+    <div id="app">
+        <div class="band"></div>
+        <div class="wrap">
+            <header class="card top">
+                <canvas id="mini" width="80" height="80"></canvas>
+                <b>Adaptando las granjas con datos de la NASA</b>
+                <nav aria-label="Secciones">
+                    <a href="#registro">Cultivo</a>
+                    <a href="#mapa">Mapa</a>
+                    <a href="#evaluador">Evaluador</a>
+                    <a href="#resultados">Rotaciones</a>
+                    <a href="#riesgos">Clima mundial</a>
+                </nav>
+                <button class="tut" id="btnTut">¿Tutorial?</button>
+            </header>
+
+            <div class="hero">
+                <h1 class="title">Planeador de rotaciones</h1>
+                <p class="lede">Elige tu terreno en el mapa y descubre qué sembrar, cuándo y después de qué, con el clima real de NASA POWER y el suelo de SoilGrids.</p>
+            </div>
+
+            <form class="card form-card mb" id="registro" onsubmit="return false">
+                <div class="form-lado">
+                    <h3>Datos del cultivo</h3>
+                    <p>Cuéntanos qué hay hoy en tu terreno. Con eso evitamos repetir la misma familia de cultivos y cuidamos tu suelo.</p>
+                </div>
+                <div class="form-campos">
+                    <div class="fgrid">
+                        <div>
+                            <label for="selCultivo">Cultivo que tienes sembrado ahora</label>
+                            <select name="cultivo" id="selCultivo">
+                            <!-- Lista tomada de cultivos.csv: si agregas un cultivo ahí, agrégalo aquí también -->
+                            <option value="">Ninguno / terreno sin sembrar</option>
+                            <optgroup label="Cereales y granos">
+                            <option value="Maíz">Maíz</option>
+                            <option value="Trigo">Trigo</option>
+                            <option value="Cebada">Cebada</option>
+                            <option value="Avena">Avena</option>
+                            <option value="Sorgo">Sorgo</option>
+                            <option value="Amaranto">Amaranto</option>
+                            </optgroup>
+                            <optgroup label="Leguminosas">
+                            <option value="Frijol">Frijol</option>
+                            <option value="Garbanzo">Garbanzo</option>
+                            <option value="Haba">Haba</option>
+                            <option value="Chícharo">Chícharo</option>
+                            <option value="Lenteja">Lenteja</option>
+                            <option value="Soya">Soya</option>
+                            <option value="Cacahuate">Cacahuate</option>
+                            <option value="Veza (abono verde)">Veza (abono verde)</option>
+                            </optgroup>
+                            <optgroup label="Hortalizas">
+                            <option value="Jitomate">Jitomate</option>
+                            <option value="Chile">Chile</option>
+                            <option value="Papa">Papa</option>
+                            <option value="Calabaza">Calabaza</option>
+                            <option value="Pepino">Pepino</option>
+                            <option value="Sandía">Sandía</option>
+                            <option value="Melón">Melón</option>
+                            <option value="Brócoli">Brócoli</option>
+                            <option value="Col">Col</option>
+                            <option value="Coliflor">Coliflor</option>
+                            <option value="Cebolla">Cebolla</option>
+                            <option value="Ajo">Ajo</option>
+                            <option value="Zanahoria">Zanahoria</option>
+                            <option value="Lechuga">Lechuga</option>
+                            </optgroup>
+                            <optgroup label="Otros">
+                            <option value="Girasol">Girasol</option>
+                            </optgroup>
+                        </select>
+                        </div>
+                        <div>
+                            <label for="selSuelo">Tipo de suelo</label>
+                            <select name="suelo" id="selSuelo">
+                                <option value="">Elegir…</option>
+                                <option>Arcilloso</option>
+                                <option>Arenoso</option>
+                                <option>Limoso</option>
+                                <option>Franco</option>
+                                <option>No sé</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <section class="card mb" id="mapa">
+                <div class="sec-h">
+                    <h3>Selecciona el punto en el mapa</h3>
+                    <p class="hint">Escribe la latitud y la longitud, o toca el mapa para marcar el lugar de tu cultivo. Arriba a la derecha puedes cambiar entre Terreno y Satélite.</p>
+                </div>
+
+                <div class="coords">
+                    <div><label for="lat">Latitud</label><input type="number" id="lat" step="any" min="-90" max="90" placeholder="Ej. 19.1738"></div>
+                    <div><label for="lon">Longitud</label><input type="number" id="lon" step="any" min="-180" max="180" placeholder="Ej. -96.1342"></div>
+                    <span class="sub">Las dos opciones se sincronizan.</span>
+                </div>
+
+                <div class="mgrid">
+                    <div id="datos">
+                        <div class="vacio">Toca un punto en el mapa.</div>
+                    </div>
+                    <div id="mapwrap">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card mb" id="evaluador">
+                <div class="sec-h">
+                    <h3>Evaluador de cultivo</h3>
+                    <p class="hint">Compara el clima y el suelo de tu punto con lo que pide cada cultivo y responde con un puntaje de 0 a 100, qué lo limita y qué hacer al respecto.</p>
+                </div>
+
+                <div class="ev-grid">
+                    <form class="ev-controles" id="evForm" onsubmit="return false" autocomplete="off">
+                        <div class="seg" role="group" aria-label="Qué quieres hacer">
+                            <button type="button" data-m="cultivo" class="on" aria-pressed="true">Evaluar un cultivo</button>
+                            <button type="button" data-m="ranking" aria-pressed="false">Recomendar cultivos</button>
+                        </div>
+
+                        <div class="ev-punto" id="evPunto">
+                            <i aria-hidden="true"></i><span>Aún no eliges un punto en el mapa</span>
+                        </div>
+
+                        <div id="evBloqueCultivo" class="ev-bloque">
+                            <label for="evCultivo">Cultivo (nombre científico)</label>
+                            <input type="text" id="evCultivo" list="evLista" placeholder="Ej. Zea mays" spellcheck="false">
+                            <datalist id="evLista"></datalist>
+                            <button type="button" id="evUsarForm" class="enlace" hidden></button>
+                        </div>
+
+                        <div id="evBloqueRanking" class="ev-bloque" hidden>
+                            <div class="ev-fila">
+                                <div>
+                                    <label for="evTipo">Ciclo de vida</label>
+                                    <select id="evTipo">
+                                        <option value="">Todos</option>
+                                        <option value="anual">Anuales</option>
+                                        <option value="perenne">Perennes</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="evTop">Cuántos mostrar</label>
+                                    <input type="number" id="evTop" min="1" max="50" value="10">
+                                </div>
+                            </div>
+                            <label for="evCategoria">Categoría</label>
+                            <select id="evCategoria"><option value="">Todas</option></select>
+                        </div>
+
+                        <div class="ev-bloque">
+                            <label for="evSiembra">Fecha de siembra</label>
+                            <input type="date" id="evSiembra">
+                            <div class="ev-fila">
+                                <div>
+                                    <label for="evSiembraFin">Probar hasta</label>
+                                    <input type="date" id="evSiembraFin">
+                                </div>
+                                <div>
+                                    <label for="evCosecha">Cosecha deseada</label>
+                                    <input type="date" id="evCosecha">
+                                </div>
+                            </div>
+                            <p class="sub" id="evAyudaFechas">Opcional. Con “Probar hasta” se revisa una fecha por semana y se elige la mejor. La cosecha deseada solo se usa con una fecha única.</p>
+                        </div>
+
+                        <label class="interruptor" for="evRiego">
+                            <input type="checkbox" id="evRiego">
+                            <span class="pista" aria-hidden="true"></span>
+                            <span>Mi terreno tiene riego <small>La lluvia no penaliza el puntaje.</small></span>
+                        </label>
+
+                        <details class="ev-avanzado">
+                            <summary>Opciones avanzadas</summary>
+                            <label for="evModo">Fuente de los datos</label>
+                            <select id="evModo">
+                                <option value="api">Descargar de internet (NASA y SoilGrids)</option>
+                                <option value="local">Archivos guardados en datos_locales</option>
+                            </select>
+                            <div class="ev-fila">
+                                <div>
+                                    <label for="evAnios">Años de clima histórico</label>
+                                    <input type="number" id="evAnios" min="1" max="15" value="5">
+                                </div>
+                                <div>
+                                    <label for="evTol">Tolerancia (grados)</label>
+                                    <input type="number" id="evTol" min="0" max="1" step="any" value="0.001">
+                                </div>
+                            </div>
+                            <p class="sub">Los años históricos se usan para estimar fechas futuras. La tolerancia solo aplica a archivos locales.</p>
+                        </details>
+
+                        <button type="button" id="evEnviar" class="primario">Evaluar cultivo</button>
+                        <p id="evEstado" role="status"></p>
+                    </form>
+
+                    <div class="ev-salida" id="evSalida" aria-live="polite">
+                        <div class="ev-vacio">
+                            <svg viewBox="0 0 220 130" aria-hidden="true">
+                                <path d="M20 110A90 90 0 0 1 200 110" pathLength="100" class="g-fantasma"/>
+                                <text x="110" y="104" text-anchor="middle">?</text>
+                            </svg>
+                            <b>Aquí aparecerá la respuesta</b>
+                            <p>Elige un punto en el mapa, un cultivo y una fecha de siembra. Verás el puntaje, qué factor lo limita, el detalle de clima y suelo, y recomendaciones para mejorarlo.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card mb" id="resultados">
+                <div class="sec-h">
+                    <h3>Rotaciones propuestas</h3>
+                    <p class="hint">Se consultan 20 parámetros de NASA POWER de los últimos 10 años y se arman 3 rotaciones por estación, con la explicación de cada una.</p>
+                    <div class="accion">
+                        <button type="button" id="btnEnviar">Calcular rotaciones</button>
+                        <p id="respuesta"></p>
+                    </div>
+                </div>
+                <div class="res">
+                    <div class="sum">
+                        <div>
+                            <b>Resumen</b>
+                            <small>Con base en tus datos</small>
+                        </div>
+
+                        <div>
+                            <b id="rCult">—</b>
+                            <small>Cultivo actual</small>
+                        </div>
+
+                        <div>
+                            <b id="rPunto">Sin seleccionar</b>
+                            <small>Punto en el mapa</small>
+                        </div>
+
+                        <div>
+                            <b id="rBest">—</b>
+                            <small>Rotación recomendada</small>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="sub" id="rNota" style="margin:2px 0 8px">Llena el formulario, elige el punto y presiona “Calcular rotaciones”.</p>
+                        <div class="tw" id="rClima"></div>
+                        <div class="tabs" id="tabsEst"></div>
+                        <div id="rotaciones"></div>
+                        <div id="rEvitar"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card mb" id="riesgos">
+                <div class="sec-h">
+                    <h3>Humedad y lluvia en el mundo</h3>
+                    <p class="hint">Elige Humedad o Lluvia mensual y los países se pintan de verde (bajo), amarillo (medio) o rojo (alto) con datos reales de NASA. Con Zonas agroclimáticas, K-means agrupa los países por su clima. Déficit hídrico predice la falta de agua y la sequía de los próximos 12 meses, y Tendencia climática por zona muestra cómo cambian la temperatura y la lluvia en cada zona. Toca un país para ver su dato.</p>
+                </div>
+
+                <div class="capas" id="capas">
+                    <button type="button" data-c="">Sin colores</button>
+                    <button type="button" data-c="humedad">Humedad NASA</button>
+                    <button type="button" data-c="lluvia">Lluvia mensual GPM</button>
+                    <button type="button" data-c="zonas">Zonas agroclimáticas</button>
+                    <button type="button" data-c="deficit">Déficit hídrico (predicción)</button>
+                    <button type="button" data-c="tendencia">Tendencia climática por zona</button>
+                </div>
+                <div class="filtro" id="filtroLluvia" style="display:none">
+                    <label for="selMes">Mes</label><select id="selMes"></select>
+                    <label for="selAnio">Año</label><select id="selAnio"></select>
+                </div>
+
+                <div class="filtro" id="filtroZonas" style="display:none">
+                    <label for="selK">Número de zonas</label>
+                    <select id="selK">
+                        <option value="">Automático (mejor silhouette)</option>
+                        <option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
+                    </select>
+                </div>
+
+                <div class="rgrid">
+                    <div>
+                        <canvas id="gr" width="1200" height="600"></canvas>
+                        <div class="sub" id="gcap" style="margin-top:8px"></div>
+                    </div>
+                    <div>
+                        <div id="explica"></div>
+                        <div id="predDet"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="modal">
+        <div class="box">
+            <h3>¿Sabes cómo usar la página web?</h3>
+            <button id="si">Sí</button>
+            <button class="alt" id="no">No, necesito una explicación: Tutorial</button>
+        </div>
+    </div>
+
+    <div id="tip">
+        <small id="tipn"></small>
+        <p id="tipt"></p>
+        <button class="alt" id="prev">Anterior</button>
+        <button id="next">Siguiente</button>
+        <button class="alt" id="exit">Salir</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="script.js"></script>
+    <script src="evaluador.js"></script>
+    <script src="asistente.js"></script>
+</body>
+</html>
